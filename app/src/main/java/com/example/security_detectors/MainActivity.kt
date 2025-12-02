@@ -29,17 +29,36 @@ import com.example.security_detectors.detectors.SecurityDetectors
 import com.example.security_detectors.ui.theme.Security_detectorsTheme
 import kotlinx.coroutines.delay
 
+// Palette de couleurs personnalisée
+object AppColors {
+    val Bordeaux = Color(0xFF8B0000)        // Bordeaux foncé
+    val BordeauxLight = Color(0xFFB22222)   // Bordeaux clair
+    val BordeauxVeryLight = Color(0xFFFFE5E5) // Bordeaux très clair
+    val Black = Color(0xFF1A1A1A)           // Noir profond
+    val DarkGray = Color(0xFF2D2D2D)        // Gris foncé
+    val MediumGray = Color(0xFF404040)      // Gris moyen
+    val LightGray = Color(0xFFE0E0E0)       // Gris clair
+    val White = Color(0xFFFFFFFF)           // Blanc pur
+    val OffWhite = Color(0xFFF5F5F5)        // Blanc cassé
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             Security_detectorsTheme {
-                Scaffold(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = { SecurityTopBar() }
-                ) { innerPadding ->
-                    SecurityStatusView(modifier = Modifier.padding(innerPadding))
+                    color = AppColors.OffWhite
+                ) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = { SecurityTopBar() },
+                        containerColor = AppColors.OffWhite
+                    ) { innerPadding ->
+                        SecurityStatusView(modifier = Modifier.padding(innerPadding))
+                    }
                 }
             }
         }
@@ -53,12 +72,13 @@ fun SecurityTopBar() {
         title = {
             Text(
                 "Détection de Sécurité",
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = AppColors.White
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = AppColors.Bordeaux,
+            titleContentColor = AppColors.White
         )
     )
 }
@@ -141,7 +161,7 @@ fun SecurityStatusView(modifier: Modifier = Modifier) {
                     .padding(32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = AppColors.Bordeaux)
             }
         }
     }
@@ -161,12 +181,11 @@ fun SecurityOverviewCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSecure && !isLoading)
-                MaterialTheme.colorScheme.primaryContainer
-            else if (isLoading)
-                MaterialTheme.colorScheme.surfaceVariant
-            else
-                MaterialTheme.colorScheme.errorContainer
+            containerColor = when {
+                isLoading -> AppColors.DarkGray
+                isSecure -> AppColors.Black
+                else -> AppColors.Bordeaux
+            }
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -184,24 +203,14 @@ fun SecurityOverviewCard(
                     else "Menaces Détectées",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = if (isSecure && !isLoading)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else if (isLoading)
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    else
-                        MaterialTheme.colorScheme.onErrorContainer
+                    color = AppColors.White
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = if (isLoading) "Vérification de la sécurité..."
                     else "$threatsDetected menace(s) identifiée(s)",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isSecure && !isLoading)
-                        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                    else if (isLoading)
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                    else
-                        MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f)
+                    color = AppColors.White.copy(alpha = 0.8f)
                 )
             }
 
@@ -211,12 +220,7 @@ fun SecurityOverviewCard(
                 else Icons.Default.Warning,
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = if (isSecure && !isLoading)
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                else if (isLoading)
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                else
-                    MaterialTheme.colorScheme.onErrorContainer
+                tint = AppColors.White
             )
         }
     }
@@ -239,13 +243,13 @@ fun SecurityDetectionCard(
         colors = CardDefaults.cardColors(
             containerColor = if (isDetected) {
                 when (severity) {
-                    SecuritySeverity.CRITICAL -> MaterialTheme.colorScheme.errorContainer
-                    SecuritySeverity.HIGH -> Color(0xFFFFE5E5)
-                    SecuritySeverity.MEDIUM -> Color(0xFFFFF3E0)
-                    SecuritySeverity.LOW -> Color(0xFFFFF9C4)
+                    SecuritySeverity.CRITICAL -> AppColors.Bordeaux
+                    SecuritySeverity.HIGH -> AppColors.BordeauxLight
+                    SecuritySeverity.MEDIUM -> AppColors.MediumGray
+                    SecuritySeverity.LOW -> AppColors.DarkGray
                 }
             } else {
-                MaterialTheme.colorScheme.surfaceVariant
+                AppColors.White
             }
         )
     ) {
@@ -267,19 +271,16 @@ fun SecurityDetectionCard(
                         .clip(RoundedCornerShape(12.dp))
                         .background(
                             if (isDetected)
-                                MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                                AppColors.White.copy(alpha = 0.2f)
                             else
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                AppColors.Black.copy(alpha = 0.08f)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = if (isDetected)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.primary,
+                        tint = if (isDetected) AppColors.White else AppColors.Black,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -288,7 +289,8 @@ fun SecurityDetectionCard(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isDetected) AppColors.White else AppColors.Black
                     )
                 }
             }
@@ -296,20 +298,14 @@ fun SecurityDetectionCard(
             // Badge de statut
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = if (isDetected)
-                    MaterialTheme.colorScheme.error
-                else
-                    MaterialTheme.colorScheme.primary
+                color = if (isDetected) AppColors.White else AppColors.Bordeaux
             ) {
                 Text(
                     text = if (isDetected) "Détecté" else "OK",
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
-                    color = if (isDetected)
-                        MaterialTheme.colorScheme.onError
-                    else
-                        MaterialTheme.colorScheme.onPrimary
+                    color = if (isDetected) AppColors.Bordeaux else AppColors.White
                 )
             }
         }
