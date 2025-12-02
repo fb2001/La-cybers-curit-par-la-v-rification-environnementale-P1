@@ -29,7 +29,6 @@ import com.example.security_detectors.detectors.SecurityDetectors
 import com.example.security_detectors.ui.theme.Security_detectorsTheme
 import kotlinx.coroutines.delay
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +106,6 @@ fun SecurityStatusView(modifier: Modifier = Modifier) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 SecurityDetectionCard(
                     title = "Débogueur",
-                    description = "Détecte si un débogueur est connecté à l'application",
                     isDetected = debugger,
                     icon = Icons.Default.Build,
                     severity = SecuritySeverity.HIGH
@@ -115,7 +113,6 @@ fun SecurityStatusView(modifier: Modifier = Modifier) {
 
                 SecurityDetectionCard(
                     title = "Mode Développeur",
-                    description = "Vérifie si les options développeur sont activées",
                     isDetected = devMode,
                     icon = Icons.Default.Settings,
                     severity = SecuritySeverity.MEDIUM
@@ -123,7 +120,6 @@ fun SecurityStatusView(modifier: Modifier = Modifier) {
 
                 SecurityDetectionCard(
                     title = "Appareil Rooté",
-                    description = "Détecte si l'appareil a des privilèges root",
                     isDetected = rooted,
                     icon = Icons.Default.Lock,
                     severity = SecuritySeverity.CRITICAL
@@ -131,7 +127,6 @@ fun SecurityStatusView(modifier: Modifier = Modifier) {
 
                 SecurityDetectionCard(
                     title = "Émulateur",
-                    description = "Détermine si l'app s'exécute sur un émulateur",
                     isDetected = emulator,
                     icon = Icons.Default.Phone,
                     severity = SecuritySeverity.LOW
@@ -234,7 +229,6 @@ enum class SecuritySeverity {
 @Composable
 fun SecurityDetectionCard(
     title: String,
-    description: String,
     isDetected: Boolean,
     icon: ImageVector,
     severity: SecuritySeverity
@@ -295,11 +289,6 @@ fun SecurityDetectionCard(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
