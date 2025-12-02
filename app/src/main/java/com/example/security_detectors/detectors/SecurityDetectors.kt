@@ -9,12 +9,12 @@ import java.io.File
 
 object SecurityDetectors {
 
-    /** Détecteur de débogueur */
+//Détecteur de débogueur
     fun isDebuggerConnected(): Boolean {
         return Debug.isDebuggerConnected()
     }
 
-    /** Détecteur de mode développeur */
+    // Détecteur de mode développeur
     fun isDeveloperModeEnabled(context: Context): Boolean {
         return try {
             Settings.Global.getInt(context.contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED) == 1
@@ -23,7 +23,7 @@ object SecurityDetectors {
         }
     }
 
-    /** Détecteur de root */
+// Détecteur de root
     fun isDeviceRooted(): Boolean {
         val paths = arrayOf(
             "/system/app/Superuser.apk",
@@ -39,7 +39,7 @@ object SecurityDetectors {
         return paths.any { File(it).exists() }
     }
 
-    /** Détecteur d'émulateur */
+    // Détecteur d'émulateur
     fun isEmulator(): Boolean {
         return (Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.lowercase().contains("vbox")
